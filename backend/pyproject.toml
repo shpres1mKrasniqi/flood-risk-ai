@@ -5,7 +5,14 @@ description = "AI-assisted flood risk prediction API for Kosovo"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]",
+    "pandas>=3.0.6",
 ]
 
 [tool.fastapi]
 entrypoint = "app.main:app"
+
+[dependency-groups]
+ml = [
+    "matplotlib>=3.11.2",
+    "openpyxl>=3.1.5",
+]
