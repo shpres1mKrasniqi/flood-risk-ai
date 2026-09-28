@@ -1,0 +1,39 @@
+municipality,true_risk,share_pred_low,share_pred_medium,share_pred_high,share_correct
+Deqan,1,0.1,0.8,0.1,0.8
+Drenas,1,0.2,0.8,0.0,0.8
+Kline,1,0.0,0.8,0.2,0.8
+Fushe Kosove,1,0.0,0.9,0.1,0.9
+Gjakov,2,0.1,0.5,0.4,0.4
+Gjilan,1,0.2,0.7,0.1,0.7
+Viti,1,0.0,0.9,0.1,0.9
+Graqanic,1,0.2,0.8,0.0,0.8
+Hani i Elezit,1,0.0,0.7,0.3,0.7
+Istog,1,0.1,0.8,0.1,0.8
+Junik,2,0.0,0.9,0.1,0.1
+Kaqanik,1,0.1,0.6,0.3,0.6
+Kamenice,1,0.1,0.9,0.0,0.9
+Kllokot,1,0.2,0.7,0.1,0.7
+Leposaviq,0,0.0,0.8,0.2,0.0
+Lipjan,1,0.0,0.9,0.1,0.9
+Malisheve,1,0.3,0.4,0.3,0.4
+Mamushe,2,0.0,1.0,0.0,0.0
+Mitrovice e Jugut,0,0.0,0.9,0.1,0.0
+Mitrovice e Veriut,1,0.0,0.9,0.1,0.9
+Novoberde,1,0.0,1.0,0.0,1.0
+Obiliq,1,0.1,0.7,0.2,0.7
+Rahovec,2,0.1,0.8,0.1,0.1
+Peja,1,0.0,1.0,0.0,1.0
+Podujeve,1,0.0,0.7,0.3,0.7
+Prishtine,1,0.0,0.8,0.2,0.8
+Prizren,1,0.1,0.7,0.2,0.7
+Ranillug,1,0.2,0.5,0.3,0.5
+Skenderaj,0,0.0,0.7,0.3,0.0
+Shtime,1,0.0,0.8,0.2,0.8
+Shterpce,1,0.0,0.8,0.2,0.8
+Suhareke,2,0.1,0.9,0.0,0.0
+Ferizaj,1,0.1,0.7,0.2,0.7
+Vushtrri,2,0.1,0.8,0.1,0.1
+Zubin Potok,0,0.0,0.7,0.3,0.0
+Zveqan,1,0.0,0.9,0.1,0.9
+Partesh,1,0.3,0.6,0.1,0.6
+Dragash,1,0.0,0.5,0.5,0.5

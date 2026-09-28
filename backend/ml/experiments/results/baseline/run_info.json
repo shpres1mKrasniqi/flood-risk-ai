@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-09-28T17:36:31+00:00",
+  "dataset_file": "DataSeti_Finali.xlsx",
+  "dataset_sha256": "99073da8aa1d6a8b54cb87a0ee22ca8eaeb7612d71dede736bbc98178a7f3b41",
+  "scikit_learn_version": "1.9.1",
+  "cv": {
+    "strategy": "RepeatedStratifiedKFold",
+    "n_splits": 4,
+    "n_repeats": 10,
+    "total_folds": 40,
+    "random_state": 42
+  },
+  "primary_metric": "f1_macro",
+  "confusion_matrix_note": "Counts summed over 10 repeats; each row is predicted once per repeat.",
+  "models": [
+    "dummy_most_frequent",
+    "dummy_stratified"
+  ]
+}

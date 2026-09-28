@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-09-27T19:05:13+00:00",
+  "dataset_file": "DataSeti_Finali.xlsx",
+  "dataset_sha256": "99073da8aa1d6a8b54cb87a0ee22ca8eaeb7612d71dede736bbc98178a7f3b41",
+  "n_rows": 38,
+  "columns": {
+    "municipality": "str",
+    "elevation": "float64",
+    "distance_from_river": "float64",
+    "rainfall": "float64",
+    "max_water_level": "float64",
+    "min_water_level": "float64",
+    "min_slope": "float64",
+    "max_slope": "float64",
+    "soil_type": "str",
+    "risk": "int64"
+  },
+  "features": [
+    "elevation",
+    "distance_from_river",
+    "rainfall",
+    "max_water_level",
+    "min_water_level",
+    "min_slope",
+    "max_slope",
+    "soil_type"
+  ],
+  "target": "risk",
+  "units": {
+    "elevation": "m",
+    "distance_from_river": "km",
+    "rainfall": "mm",
+    "max_water_level": "cm",
+    "min_water_level": "cm",
+    "min_slope": "%",
+    "max_slope": "%"
+  },
+  "missing_values": 0,
+  "duplicate_rows": 0,
+  "duplicate_feature_vectors": 0,
+  "soil_type_categories": [
+    "Aluviale",
+    "Fluvisole",
+    "Kambisole",
+    "Ranker",
+    "Rendzina",
+    "Smonice",
+    "Toka Kafe"
+  ],
+  "cv_feasibility": {
+    "n_rows": 38,
+    "class_counts": {
+      "Low": 4,
+      "Medium": 28,
+      "High": 6
+    },
+    "smallest_class": "Low",
+    "smallest_class_count": 4,
+    "max_stratified_folds": 4,
+    "note": "StratifiedKFold needs at least n_splits samples in every class, so the number of folds cannot exceed the smallest class count."
+  }
+}

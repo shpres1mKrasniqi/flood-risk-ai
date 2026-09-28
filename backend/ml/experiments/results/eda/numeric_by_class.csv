@@ -1,0 +1,22 @@
+feature,statistic,0 (Low),1 (Medium),2 (High)
+elevation,median,540.5,541.0,388.0
+elevation,min,455.0,376.0,337.0
+elevation,max,740.0,1047.0,618.0
+distance_from_river,median,0.41,0.62,0.71
+distance_from_river,min,0.2,0.05,0.15
+distance_from_river,max,0.45,14.16,9.3
+rainfall,median,589.65,679.5,780.05
+rainfall,min,337.5,552.9,700.0
+rainfall,max,720.0,900.0,887.6
+max_water_level,median,165.5,136.0,225.0
+max_water_level,min,90.0,73.0,181.0
+max_water_level,max,180.0,180.0,563.0
+min_water_level,median,29.0,30.0,48.0
+min_water_level,min,14.0,8.0,45.0
+min_water_level,max,69.0,69.0,95.0
+min_slope,median,6.0,3.0,4.0
+min_slope,min,2.0,1.0,2.0
+min_slope,max,17.0,12.0,4.0
+max_slope,median,38.5,32.5,29.5
+max_slope,min,27.0,6.0,19.0
+max_slope,max,43.0,70.0,44.0
