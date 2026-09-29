@@ -20,11 +20,7 @@ PRIMARY_METRIC = "f1_macro"
 
 
 def compute_metrics(y_true, y_pred) -> dict[str, float]:
-    """Return scalar metrics for one set of predictions.
 
-    zero_division=0: if a class is never predicted, its precision is counted
-    as 0 instead of raising a warning (this happens with the dummy baseline).
-    """
     metrics = {
         "accuracy": accuracy_score(y_true, y_pred),
         "balanced_accuracy": balanced_accuracy_score(y_true, y_pred),

@@ -1,13 +1,3 @@
-"""Phase 5 - compare candidate models with default/conservative settings (no tuning).
-
-Run from the backend/ directory:
-    uv run --group ml python -m ml.training.compare_models
-
-Every model is evaluated with exactly the same CV splits, metrics and
-preprocessing as the baseline. Two feature sets are run:
-* full_features                - all 8 predictive features;
-* without_distance_from_river  - ablation, to measure that feature's contribution.
-"""
 
 from dataclasses import dataclass
 
@@ -43,7 +33,6 @@ class Candidate:
 
 
 def candidates() -> dict[str, Candidate]:
-    """Default or deliberately conservative settings; nothing here is tuned."""
     return {
         "dummy_most_frequent": Candidate(
             DummyClassifier(strategy="most_frequent"), True, "Reference: always predicts Medium."
@@ -96,10 +85,7 @@ def run_feature_set(
 
 
 def misclassification_overview(results: list[EvaluationResult]) -> pd.DataFrame:
-    """Share of repeats each municipality was predicted correctly, per model.
 
-    Rows that almost every model gets wrong are candidates for label review.
-    """
     base = results[0].predictions[[config.ID_COLUMN, "true_risk"]].copy()
     for r in results:
         if r.name.startswith("dummy"):

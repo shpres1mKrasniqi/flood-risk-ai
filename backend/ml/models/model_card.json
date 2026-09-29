@@ -1,0 +1,119 @@
+{
+  "model_name": "random_forest",
+  "created_at": "2026-09-29T07:55:32+00:00",
+  "artifact": "flood_risk_model.joblib",
+  "scikit_learn_version": "1.9.1",
+  "dataset_file": "DataSeti_Finali.xlsx",
+  "dataset_sha256": "99073da8aa1d6a8b54cb87a0ee22ca8eaeb7612d71dede736bbc98178a7f3b41",
+  "n_training_rows": 38,
+  "class_counts": {
+    "Low": 4,
+    "Medium": 28,
+    "High": 6
+  },
+  "target": "risk",
+  "classes": {
+    "0": "Low",
+    "1": "Medium",
+    "2": "High"
+  },
+  "features": {
+    "numeric": [
+      "elevation",
+      "distance_from_river",
+      "rainfall",
+      "max_water_level",
+      "min_water_level",
+      "min_slope",
+      "max_slope"
+    ],
+    "categorical": [
+      "soil_type"
+    ],
+    "units": {
+      "elevation": "m",
+      "distance_from_river": "km",
+      "rainfall": "mm",
+      "max_water_level": "mm",
+      "min_water_level": "mm",
+      "min_slope": "%",
+      "max_slope": "%"
+    },
+    "known_soil_types": [
+      "Aluviale",
+      "Fluvisole",
+      "Kambisole",
+      "Ranker",
+      "Rendzina",
+      "Smonice",
+      "Toka Kafe"
+    ]
+  },
+  "preprocessing": "OneHotEncoder(handle_unknown='ignore') for soil_type; numeric passthrough (trees are scale-invariant).",
+  "model_params": {
+    "n_estimators": 300,
+    "class_weight": "balanced",
+    "random_state": 42
+  },
+  "selection_reason": "Random Forest was tied with Gradient Boosting and Decision Tree for the best macro F1 (differences within one standard deviation) and had the lowest variance of the three across CV repeats. It also provides class probabilities and feature importances.",
+  "cv": {
+    "strategy": "RepeatedStratifiedKFold",
+    "n_splits": 4,
+    "n_repeats": 10,
+    "total_folds": 40,
+    "random_state": 42
+  },
+  "cv_estimate": {
+    "model": "random_forest",
+    "accuracy_mean": 0.8079,
+    "accuracy_std": 0.0217,
+    "balanced_accuracy_mean": 0.6437,
+    "balanced_accuracy_std": 0.0287,
+    "f1_macro_mean": 0.6444,
+    "f1_macro_std": 0.0331,
+    "f1_weighted_mean": 0.7962,
+    "f1_weighted_std": 0.0215,
+    "precision_macro_mean": 0.6639,
+    "precision_macro_std": 0.0501,
+    "recall_macro_mean": 0.6437,
+    "recall_macro_std": 0.0287,
+    "precision_low_mean": 0.3833,
+    "precision_low_std": 0.1581,
+    "precision_medium_mean": 0.8588,
+    "precision_medium_std": 0.0169,
+    "precision_high_mean": 0.7496,
+    "precision_high_std": 0.071,
+    "recall_low_mean": 0.225,
+    "recall_low_std": 0.0791,
+    "recall_medium_mean": 0.8893,
+    "recall_medium_std": 0.0313,
+    "recall_high_mean": 0.8167,
+    "recall_high_std": 0.0527,
+    "f1_low_mean": 0.281,
+    "f1_low_std": 0.1015,
+    "f1_medium_mean": 0.8735,
+    "f1_medium_std": 0.0195,
+    "f1_high_mean": 0.7788,
+    "f1_high_std": 0.0424,
+    "fold_f1_macro_mean": 0.6198,
+    "fold_f1_macro_std": 0.193
+  },
+  "feature_importances": {
+    "max_water_level": 0.2263,
+    "rainfall": 0.1701,
+    "min_water_level": 0.1381,
+    "elevation": 0.1132,
+    "soil_type": 0.1095,
+    "distance_from_river": 0.1024,
+    "min_slope": 0.0717,
+    "max_slope": 0.0687
+  },
+  "limitations": [
+    "Trained on 38 Kosovo municipalities only; estimates have high variance.",
+    "Labels are an expert multi-criteria assessment based on the same input features, not observed flood events. The model reproduces that assessment.",
+    "The Low class has 4 samples and is poorly recognised (low recall); Low predictions are unreliable.",
+    "Rainfall and water-level values come from 2022 or 2024 depending on the municipality.",
+    "Predicted probabilities are model scores, not real-world probabilities of flooding.",
+    "Feature importances describe what the model uses, not causes of flooding."
+  ]
+}

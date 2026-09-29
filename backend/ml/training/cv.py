@@ -1,11 +1,3 @@
-"""Cross-validation strategy.
-
-With 38 rows a single train/test split is too unstable, so every model is
-evaluated with repeated stratified k-fold cross-validation. The number of folds
-is derived from the data, not hard-coded: StratifiedKFold needs at least
-n_splits samples in every class.
-"""
-
 import pandas as pd
 from sklearn.model_selection import RepeatedStratifiedKFold
 

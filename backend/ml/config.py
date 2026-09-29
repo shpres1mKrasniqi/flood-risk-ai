@@ -1,5 +1,3 @@
-"""Central configuration for the ML component: paths, dataset schema and class labels."""
-
 import os
 from pathlib import Path
 
@@ -13,6 +11,10 @@ DATASET_PATH = Path(
 EXPERIMENTS_DIR = ML_ROOT / "experiments"
 RESULTS_DIR = EXPERIMENTS_DIR / "results"
 PLOTS_DIR = EXPERIMENTS_DIR / "plots"
+
+MODELS_DIR = ML_ROOT / "models"
+MODEL_PATH = Path(os.getenv("FLOOD_MODEL_PATH", MODELS_DIR / "flood_risk_model.joblib"))
+MODEL_CARD_PATH = MODEL_PATH.with_name("model_card.json")
 
 ID_COLUMN = "municipality"
 TARGET = "risk"

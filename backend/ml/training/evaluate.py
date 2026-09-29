@@ -1,18 +1,6 @@
-"""Evaluate a pipeline with repeated stratified CV and save the results.
-
-Two levels of scores are produced:
-
-* fold level   - metrics on each test fold (~9-10 rows, only 1 Low sample),
-                 which makes per-fold macro F1 very noisy;
-* repeat level - within one repeat every row is predicted exactly once
-                 (out-of-fold), so metrics are computed on all 38 predictions.
-                 This is more stable and is the level used to compare models.
-
-Both are reported as mean +/- std so the variability is visible.
-"""
-
 import hashlib
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,9 +8,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import sklearn
-from sklearn.base import clone
+from sklearn.base import BaseEstimator, clone
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn.pipeline import Pipeline
 
 from ml import config
 from ml.training.cv import describe_cv
@@ -34,8 +21,8 @@ class EvaluationResult:
     name: str
     fold_scores: pd.DataFrame
     repeat_scores: pd.DataFrame
-    confusion_matrix: np.ndarray        # summed over all repeats
-    predictions: pd.DataFrame           # per municipality, share of repeats per predicted class
+    confusion_matrix: np.ndarray        
+    predictions: pd.DataFrame           
 
     def summary(self) -> dict[str, float | str]:
         row: dict[str, float | str] = {"model": self.name}
@@ -48,13 +35,8 @@ class EvaluationResult:
         return row
 
 
-def _fold_seeds(model: Pipeline, fold_index: int) -> dict[str, int]:
-    """Give every fold its own fixed seed.
+def _fold_seeds(model: BaseEstimator, fold_index: int) -> dict[str, int]:
 
-    Without this, a cloned estimator with random_state=42 draws the same random
-    sequence in every fold, so its folds would not be independent. Seeds stay
-    reproducible because they depend only on the fold index.
-    """
     return {
         key: value + fold_index
         for key, value in model.get_params().items()
@@ -64,12 +46,14 @@ def _fold_seeds(model: Pipeline, fold_index: int) -> dict[str, int]:
 
 def evaluate_pipeline(
     name: str,
-    pipeline: Pipeline,
+    pipeline: BaseEstimator,
     X: pd.DataFrame,
     y: pd.Series,
     ids: pd.Series,
     cv: RepeatedStratifiedKFold,
+    on_fold_fitted: Callable[[BaseEstimator, int, int], None] | None = None,
 ) -> EvaluationResult:
+
     n_splits = cv.cvargs["n_splits"]
     oof = np.full((cv.n_repeats, len(y)), -1, dtype=int)
     fold_rows = []
@@ -79,6 +63,8 @@ def evaluate_pipeline(
         model = clone(pipeline)  # fresh, unfitted copy for every fold
         model.set_params(**_fold_seeds(model, i))
         model.fit(X.iloc[train_idx], y.iloc[train_idx])
+        if on_fold_fitted is not None:
+            on_fold_fitted(model, repeat, fold)
         y_pred = model.predict(X.iloc[test_idx])
         oof[repeat, test_idx] = y_pred
         fold_rows.append({"repeat": repeat, "fold": fold, **compute_metrics(y.iloc[test_idx], y_pred)})

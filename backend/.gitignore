@@ -19,6 +19,7 @@ __pycache__/
 # ML artifacts
 *.pkl
 *.joblib
+!ml/models/flood_risk_model.joblib
 
 # Node
 node_modules/
