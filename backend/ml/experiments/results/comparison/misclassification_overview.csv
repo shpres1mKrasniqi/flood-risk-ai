@@ -1,0 +1,39 @@
+municipality,true_risk,logistic_regression,decision_tree,random_forest,svm_rbf,knn,gradient_boosting,mean_share_correct,true_label
+Skenderaj,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,Low
+Vushtrri,2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,High
+Zubin Potok,0,0.0,0.2,0.0,0.0,0.0,0.0,0.033,Low
+Mitrovice e Jugut,0,0.0,0.3,0.0,0.0,0.0,0.2,0.083,Low
+Mitrovice e Veriut,1,0.0,0.6,0.0,0.0,0.2,0.8,0.267,Medium
+Zveqan,1,0.4,0.6,0.1,0.2,0.3,0.0,0.267,Medium
+Peja,1,0.0,0.5,0.3,0.0,0.4,1.0,0.367,Medium
+Junik,2,0.1,0.9,0.9,0.1,0.0,0.9,0.483,High
+Hani i Elezit,1,0.1,0.1,1.0,0.9,1.0,0.2,0.55,Medium
+Leposaviq,0,1.0,0.7,0.9,0.8,0.1,0.5,0.667,Low
+Rahovec,2,0.9,1.0,1.0,0.1,0.3,1.0,0.717,High
+Istog,1,0.1,0.5,0.9,1.0,1.0,0.8,0.717,Medium
+Suhareke,2,0.6,1.0,1.0,0.7,0.1,1.0,0.733,High
+Dragash,1,0.5,0.5,0.7,0.9,1.0,1.0,0.767,Medium
+Shterpce,1,0.9,0.9,1.0,0.4,0.7,1.0,0.817,Medium
+Gjakov,2,1.0,1.0,1.0,0.0,1.0,1.0,0.833,High
+Novoberde,1,0.9,0.5,0.9,1.0,1.0,1.0,0.883,Medium
+Drenas,1,1.0,0.5,1.0,1.0,1.0,0.9,0.9,Medium
+Shtime,1,1.0,0.5,1.0,1.0,1.0,1.0,0.917,Medium
+Kaqanik,1,1.0,0.6,1.0,1.0,1.0,1.0,0.933,Medium
+Mamushe,2,1.0,1.0,1.0,1.0,0.6,1.0,0.933,High
+Podujeve,1,1.0,0.6,1.0,1.0,1.0,1.0,0.933,Medium
+Obiliq,1,0.7,1.0,1.0,0.9,1.0,1.0,0.933,Medium
+Viti,1,1.0,0.7,1.0,1.0,1.0,1.0,0.95,Medium
+Ranillug,1,1.0,0.7,1.0,1.0,1.0,1.0,0.95,Medium
+Kline,1,1.0,0.7,1.0,1.0,1.0,1.0,0.95,Medium
+Graqanic,1,1.0,0.8,1.0,1.0,1.0,1.0,0.967,Medium
+Deqan,1,1.0,1.0,1.0,0.8,1.0,1.0,0.967,Medium
+Prizren,1,1.0,0.8,1.0,1.0,1.0,1.0,0.967,Medium
+Malisheve,1,1.0,0.8,1.0,1.0,1.0,1.0,0.967,Medium
+Kamenice,1,1.0,0.9,1.0,1.0,1.0,1.0,0.983,Medium
+Gjilan,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Prishtine,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Fushe Kosove,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Kllokot,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Lipjan,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Ferizaj,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium
+Partesh,1,1.0,1.0,1.0,1.0,1.0,1.0,1.0,Medium

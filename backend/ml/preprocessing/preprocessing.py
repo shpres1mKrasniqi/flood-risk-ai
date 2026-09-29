@@ -14,7 +14,9 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from ml import config
 
 
-def build_preprocessor(scale_numeric: bool = True) -> ColumnTransformer:
+def build_preprocessor(
+    scale_numeric: bool = True, exclude: tuple[str, ...] = ()
+) -> ColumnTransformer:
     """Scale numeric features (optional) and one-hot encode soil_type.
 
     scale_numeric=True  -> for distance/margin-based models (LogReg, SVM, KNN).
@@ -23,15 +25,19 @@ def build_preprocessor(scale_numeric: bool = True) -> ColumnTransformer:
     handle_unknown="ignore": a soil type that is absent from a training fold
     (e.g. 'Rendzina', which occurs once) is encoded as all zeros instead of
     raising an error.
+
+    exclude: feature names to leave out (used for ablation experiments).
     """
+    numeric_features = [f for f in config.NUMERIC_FEATURES if f not in exclude]
+    categorical_features = [f for f in config.CATEGORICAL_FEATURES if f not in exclude]
     numeric = StandardScaler() if scale_numeric else "passthrough"
     return ColumnTransformer(
         transformers=[
-            ("numeric", numeric, config.NUMERIC_FEATURES),
+            ("numeric", numeric, numeric_features),
             (
                 "soil_type",
                 OneHotEncoder(handle_unknown="ignore", sparse_output=False),
-                config.CATEGORICAL_FEATURES,
+                categorical_features,
             ),
         ],
         remainder="drop",
@@ -39,11 +45,13 @@ def build_preprocessor(scale_numeric: bool = True) -> ColumnTransformer:
     )
 
 
-def build_pipeline(model: BaseEstimator, scale_numeric: bool = True) -> Pipeline:
+def build_pipeline(
+    model: BaseEstimator, scale_numeric: bool = True, exclude: tuple[str, ...] = ()
+) -> Pipeline:
     """Return preprocessing + model as a single estimator (the unit that is evaluated and saved)."""
     return Pipeline(
         steps=[
-            ("preprocessor", build_preprocessor(scale_numeric=scale_numeric)),
+            ("preprocessor", build_preprocessor(scale_numeric=scale_numeric, exclude=exclude)),
             ("model", model),
         ]
     )
