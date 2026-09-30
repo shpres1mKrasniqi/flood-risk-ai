@@ -84,3 +84,17 @@ class RiskClassifier(ABC):
 
     @abstractmethod
     def metadata(self) -> ClassifierMetadata: ...
+
+
+class InterpretationUnavailable(RuntimeError):
+    """The interpreter could not produce an explanation (network, quota, timeout, ...)."""
+
+
+class RiskInterpreter(ABC):
+    """Port: turns an ML assessment into a human-readable explanation.
+
+    An interpreter explains a classification; it never decides or changes it.
+    """
+
+    @abstractmethod
+    def interpret(self, assessment: "FloodRiskAssessment", metadata: ClassifierMetadata) -> str: ...

@@ -1,8 +1,7 @@
-"""Application settings, read from environment variables or backend/.env."""
-
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from ml import config as ml_config
@@ -15,6 +14,17 @@ class Settings(BaseSettings):
 
     flood_model_path: Path = ml_config.MODEL_PATH
     flood_model_card_path: Path = ml_config.MODEL_CARD_PATH
+
+    # OpenAI interpretation is optional: without a key and model, /explain returns the
+    # ML prediction with interpretation_status "disabled".
+    openai_api_key: SecretStr | None = None
+    openai_model: str | None = None
+    openai_language: str = "English"
+    openai_timeout_seconds: float = 30.0
+
+    @property
+    def interpretation_enabled(self) -> bool:
+        return bool(self.openai_api_key and self.openai_api_key.get_secret_value().strip() and self.openai_model)
 
 
 @lru_cache

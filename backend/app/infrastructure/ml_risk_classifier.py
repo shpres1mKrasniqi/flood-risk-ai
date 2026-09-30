@@ -1,8 +1,3 @@
-"""Infrastructure adapter: implements the domain's RiskClassifier with the trained ML pipeline.
-
-This is the only place in the app that imports the ml package.
-"""
-
 import json
 from pathlib import Path
 

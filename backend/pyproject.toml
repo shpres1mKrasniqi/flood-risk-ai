@@ -5,6 +5,7 @@ description = "AI-assisted flood risk prediction API for Kosovo"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]",
+    "openai>=3.22.1",
     "pandas>=3.0.6",
     "pydantic-settings>=2.15.0",
     "scikit-learn==1.9.1",

@@ -7,6 +7,7 @@ from app.domain.flood_risk import ClassifierMetadata, InvalidFloodRiskInput
 from app.presentation.dependencies import get_flood_risk_service
 from app.presentation.schemas import (
     FeatureInfo,
+    FloodRiskExplanationResponse,
     FloodRiskRequest,
     FloodRiskResponse,
     MetadataResponse,
@@ -30,6 +31,19 @@ def predict(request: FloodRiskRequest, service: ServiceDep) -> FloodRiskResponse
     except InvalidFloodRiskInput as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     return FloodRiskResponse.from_domain(assessment, _model_info(service.metadata()))
+
+
+@router.post("/explain", response_model=FloodRiskExplanationResponse)
+def explain(request: FloodRiskRequest, service: ServiceDep) -> FloodRiskExplanationResponse:
+    """ML prediction plus a generated explanation. The class always comes from the ML model."""
+    try:
+        result = service.assess_and_interpret(request.to_domain())
+    except InvalidFloodRiskInput as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+    base = FloodRiskResponse.from_domain(result.assessment, _model_info(service.metadata()))
+    return FloodRiskExplanationResponse(
+        **base.model_dump(), interpretation=result.interpretation, interpretation_status=result.status.value
+    )
 
 
 @router.get("/metadata", response_model=MetadataResponse)
