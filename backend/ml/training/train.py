@@ -89,6 +89,9 @@ def main() -> None:
             "categorical": config.CATEGORICAL_FEATURES,
             "units": config.UNITS,
             "known_soil_types": encoder.categories_[0].tolist(),
+            "training_ranges": {
+                f: {"min": float(X[f].min()), "max": float(X[f].max())} for f in config.NUMERIC_FEATURES
+            },
         },
         "preprocessing": "OneHotEncoder(handle_unknown='ignore') for soil_type; numeric passthrough (trees are scale-invariant).",
         "model_params": FINAL_PARAMS,

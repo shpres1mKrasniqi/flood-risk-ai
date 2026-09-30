@@ -1,6 +1,6 @@
 {
   "model_name": "random_forest",
-  "created_at": "2026-09-29T07:55:32+00:00",
+  "created_at": "2026-09-30T07:56:50+00:00",
   "artifact": "flood_risk_model.joblib",
   "scikit_learn_version": "1.9.1",
   "dataset_file": "DataSeti_Finali.xlsx",
@@ -47,7 +47,37 @@
       "Rendzina",
       "Smonice",
       "Toka Kafe"
-    ]
+    ],
+    "training_ranges": {
+      "elevation": {
+        "min": 337.0,
+        "max": 1047.0
+      },
+      "distance_from_river": {
+        "min": 0.05,
+        "max": 14.16
+      },
+      "rainfall": {
+        "min": 337.5,
+        "max": 900.0
+      },
+      "max_water_level": {
+        "min": 73.0,
+        "max": 563.0
+      },
+      "min_water_level": {
+        "min": 8.0,
+        "max": 95.0
+      },
+      "min_slope": {
+        "min": 1.0,
+        "max": 17.0
+      },
+      "max_slope": {
+        "min": 6.0,
+        "max": 70.0
+      }
+    }
   },
   "preprocessing": "OneHotEncoder(handle_unknown='ignore') for soil_type; numeric passthrough (trees are scale-invariant).",
   "model_params": {

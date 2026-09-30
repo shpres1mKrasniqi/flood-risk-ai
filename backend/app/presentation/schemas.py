@@ -1,0 +1,87 @@
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.domain.flood_risk import FloodRiskAssessment, FloodRiskInput, RiskLevel
+
+SCORES_NOTE = (
+    "class_scores are the share of the model's trees voting for each class. "
+    "They are model scores, not real-world probabilities of flooding."
+)
+
+
+class FloodRiskRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "examples": [
+                {
+                    "municipality": "Example",
+                    "elevation": 520,
+                    "distance_from_river": 1.2,
+                    "rainfall": 720,
+                    "soil_type": "Smonice",
+                    "max_water_level": 150,
+                    "min_water_level": 30,
+                    "min_slope": 3,
+                    "max_slope": 30,
+                }
+            ]
+        },
+    )
+
+    municipality: str | None = Field(
+        None, max_length=100, description="Optional name, used only for display/interpretation, never as a feature."
+    )
+    elevation: float = Field(..., ge=0, le=3000, description="Elevation (m)")
+    distance_from_river: float = Field(..., ge=0, le=200, description="Distance to nearest river (km)")
+    rainfall: float = Field(..., ge=0, le=5000, description="Rainfall (mm)")
+    soil_type: str = Field(..., min_length=1, max_length=50, description="Soil type; see GET /api/flood-risk/metadata")
+    max_water_level: float = Field(..., ge=0, le=100000, description="Maximum water level (mm)")
+    min_water_level: float = Field(..., ge=0, le=100000, description="Minimum water level (mm)")
+    min_slope: float = Field(..., ge=0, le=100, description="Minimum slope (%)")
+    max_slope: float = Field(..., ge=0, le=100, description="Maximum slope (%)")
+
+    def to_domain(self) -> FloodRiskInput:
+        return FloodRiskInput(**self.model_dump() | {"soil_type": self.soil_type.strip()})
+
+
+class ModelInfo(BaseModel):
+    name: str
+    cv_macro_f1_mean: float
+    cv_macro_f1_std: float
+
+
+class FloodRiskResponse(BaseModel):
+    municipality: str | None
+    risk: str = Field(..., description="Low, Medium or High")
+    risk_code: int = Field(..., description="0 = Low, 1 = Medium, 2 = High")
+    class_scores: dict[str, float]
+    class_scores_note: str = SCORES_NOTE
+    warnings: list[str]
+    model: ModelInfo
+
+    @classmethod
+    def from_domain(cls, assessment: FloodRiskAssessment, model: ModelInfo) -> "FloodRiskResponse":
+        classification = assessment.classification
+        return cls(
+            municipality=assessment.input.municipality,
+            risk=classification.risk_level.label,
+            risk_code=int(classification.risk_level),
+            class_scores={level.label: score for level, score in classification.class_scores.items()},
+            warnings=assessment.warnings,
+            model=model,
+        )
+
+
+class FeatureInfo(BaseModel):
+    name: str
+    unit: str
+    training_min: float
+    training_max: float
+
+
+class MetadataResponse(BaseModel):
+    model: ModelInfo
+    risk_levels: dict[int, str] = {level.value: level.label for level in RiskLevel}
+    soil_types: list[str]
+    numeric_features: list[FeatureInfo]
+    limitations: list[str]
