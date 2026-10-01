@@ -1,16 +1,23 @@
-# React + Vite
+# Flood risk frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite + Tailwind interface for the flood-risk API. Albanian by default, with English.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Start the backend (from `backend/`): `uv run fastapi dev app/main.py`
+2. Start the frontend (from `frontend/`):
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. Open http://localhost:5173
 
-## React Compiler
+The backend URL defaults to `http://127.0.0.1:8000`. To change it, copy `.env.example` to `.env` and set `VITE_API_URL`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/features/flood-risk/services/floodRiskApi.js` - calls `/api/flood-risk/metadata` and `/api/flood-risk/explain`
+- `src/features/flood-risk/components/` - form, result, staff gauge, explanation, limitations
+- `src/features/flood-risk/utils/fields.js` - form fields, Malisheva defaults, validation
+- `src/i18n/translations.js` - all interface text (sq, en)
+- `src/store/languageStore.js` - selected language (remembered in the browser)
