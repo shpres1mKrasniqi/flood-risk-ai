@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     flood_model_path: Path = ml_config.MODEL_PATH
     flood_model_card_path: Path = ml_config.MODEL_CARD_PATH
 
+    # Browser origins allowed to call the API (the Vite dev server by default).
+    # In .env as JSON: CORS_ORIGINS=["http://localhost:5173"]
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
     # OpenAI interpretation is optional: without a key and model, /explain returns the
     # ML prediction with interpretation_status "disabled".
     openai_api_key: SecretStr | None = None

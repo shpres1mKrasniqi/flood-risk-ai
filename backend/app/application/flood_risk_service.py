@@ -1,9 +1,3 @@
-"""Application layer: orchestrates the flood-risk use cases.
-
-Depends only on the domain. It does not know whether the classifier is a
-Random Forest or a test fake, nor whether the interpreter is OpenAI.
-"""
-
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -14,6 +8,7 @@ from app.domain.flood_risk import (
     FloodRiskInput,
     InterpretationUnavailable,
     InvalidFloodRiskInput,
+    RangeViolation,
     RiskClassifier,
     RiskInterpreter,
 )
@@ -23,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 class InterpretationStatus(str, Enum):
     OK = "ok"
-    DISABLED = "disabled"          # no interpreter configured (e.g. no API key)
-    UNAVAILABLE = "unavailable"    # interpreter failed (network, quota, timeout)
-    REJECTED = "rejected"          # text did not confirm the ML class, so it was discarded
+    DISABLED = "disabled"          
+    UNAVAILABLE = "unavailable"   
+    REJECTED = "rejected"     
 
 
 @dataclass(frozen=True)
@@ -55,10 +50,10 @@ class FloodRiskService:
         return FloodRiskAssessment(
             input=data,
             classification=classification,
-            warnings=self._out_of_range_warnings(data, meta),
+            range_violations=self._range_violations(data, meta),
         )
 
-    def assess_and_interpret(self, data: FloodRiskInput) -> InterpretedAssessment:
+    def assess_and_interpret(self, data: FloodRiskInput, language: str | None = None) -> InterpretedAssessment:
         """ML prediction first; the interpretation is added afterwards and can never change it.
 
         If interpretation fails, the prediction is still returned.
@@ -68,7 +63,7 @@ class FloodRiskService:
             return InterpretedAssessment(assessment, None, InterpretationStatus.DISABLED)
 
         try:
-            text = self._interpreter.interpret(assessment, self._classifier.metadata()).strip()
+            text = self._interpreter.interpret(assessment, self._classifier.metadata(), language).strip()
         except InterpretationUnavailable as exc:
             logger.warning("Interpretation unavailable: %s", exc)
             return InterpretedAssessment(assessment, None, InterpretationStatus.UNAVAILABLE)
@@ -84,15 +79,11 @@ class FloodRiskService:
         return self._classifier.metadata()
 
     @staticmethod
-    def _out_of_range_warnings(data: FloodRiskInput, meta: ClassifierMetadata) -> list[str]:
+    def _range_violations(data: FloodRiskInput, meta: ClassifierMetadata) -> list[RangeViolation]:
         """Flag values outside the training data: the model is extrapolating there."""
-        warnings = []
+        violations = []
         for feature, (low, high) in meta.training_ranges.items():
             value = getattr(data, feature)
             if not low <= value <= high:
-                unit = meta.feature_units.get(feature, "")
-                warnings.append(
-                    f"{feature}={value:g} {unit} is outside the training range "
-                    f"[{low:g}, {high:g}] {unit}; the prediction is less reliable."
-                )
-        return warnings
+                violations.append(RangeViolation(feature, value, low, high, meta.feature_units.get(feature, "")))
+        return violations

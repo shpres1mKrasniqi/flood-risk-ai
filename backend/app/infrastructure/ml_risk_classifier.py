@@ -34,7 +34,6 @@ class MLRiskClassifier(RiskClassifier):
         features = card["features"]
         return ClassifierMetadata(
             model_name=card["model_name"],
-            # Taken from the loaded model itself, so it can never disagree with the encoder.
             known_soil_types=self._predictor.known_soil_types,
             feature_units=features["units"],
             training_ranges={f: (r["min"], r["max"]) for f, r in features.get("training_ranges", {}).items()},

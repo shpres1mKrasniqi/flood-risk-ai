@@ -9,6 +9,8 @@ from app.domain.flood_risk import (
     RiskInterpreter,
 )
 
+LANGUAGE_NAMES = {"sq": "Albanian", "en": "English"}
+
 INSTRUCTIONS = """\
 You explain the output of a machine-learning flood-risk classifier for municipalities in Kosovo \
 to non-expert readers. You receive one prediction as JSON.
@@ -66,9 +68,12 @@ class OpenAIRiskInterpreter(RiskInterpreter):
         self._language = language
         self._max_output_tokens = max_output_tokens
 
-    def interpret(self, assessment: FloodRiskAssessment, metadata: ClassifierMetadata) -> str:
+    def interpret(
+        self, assessment: FloodRiskAssessment, metadata: ClassifierMetadata, language: str | None = None
+    ) -> str:
         instructions = INSTRUCTIONS.format(
-            risk_level=assessment.classification.risk_level.label, language=self._language
+            risk_level=assessment.classification.risk_level.label,
+            language=LANGUAGE_NAMES.get(language, self._language) if language else self._language,
         )
         context = json.dumps(build_context(assessment, metadata), ensure_ascii=False, indent=2)
         try:

@@ -71,10 +71,31 @@ class ClassifierMetadata:
 
 
 @dataclass(frozen=True)
+class RangeViolation:
+    """An input value outside the range seen in the training data."""
+
+    feature: str
+    value: float
+    training_min: float
+    training_max: float
+    unit: str
+
+    def message(self) -> str:
+        return (
+            f"{self.feature}={self.value:g} {self.unit} is outside the training range "
+            f"[{self.training_min:g}, {self.training_max:g}] {self.unit}; the prediction is less reliable."
+        )
+
+
+@dataclass(frozen=True)
 class FloodRiskAssessment:
     input: FloodRiskInput
     classification: RiskClassification
-    warnings: list[str] = field(default_factory=list)
+    range_violations: list[RangeViolation] = field(default_factory=list)
+
+    @property
+    def warnings(self) -> list[str]:
+        return [v.message() for v in self.range_violations]
 
 
 class RiskClassifier(ABC):
@@ -97,4 +118,7 @@ class RiskInterpreter(ABC):
     """
 
     @abstractmethod
-    def interpret(self, assessment: "FloodRiskAssessment", metadata: ClassifierMetadata) -> str: ...
+    def interpret(
+        self, assessment: "FloodRiskAssessment", metadata: ClassifierMetadata, language: str | None = None
+    ) -> str:
+        """language: ISO 639-1 code ("sq", "en"); None means the interpreter's default."""
