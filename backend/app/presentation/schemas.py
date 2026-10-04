@@ -44,6 +44,14 @@ class FloodRiskRequest(BaseModel):
         return FloodRiskInput(**self.model_dump() | {"soil_type": self.soil_type.strip()})
 
 
+class OutOfRangeValue(BaseModel):
+    feature: str
+    value: float
+    training_min: float
+    training_max: float
+    unit: str
+
+
 class ModelInfo(BaseModel):
     name: str
     cv_macro_f1_mean: float
@@ -57,6 +65,9 @@ class FloodRiskResponse(BaseModel):
     class_scores: dict[str, float]
     class_scores_note: str = SCORES_NOTE
     warnings: list[str]
+    out_of_range: list[OutOfRangeValue] = Field(
+        default_factory=list, description="Structured form of warnings, e.g. for translated messages in a UI."
+    )
     model: ModelInfo
 
     @classmethod
@@ -68,6 +79,7 @@ class FloodRiskResponse(BaseModel):
             risk_code=int(classification.risk_level),
             class_scores={level.label: score for level, score in classification.class_scores.items()},
             warnings=assessment.warnings,
+            out_of_range=[OutOfRangeValue(**vars(v)) for v in assessment.range_violations],
             model=model,
         )
 

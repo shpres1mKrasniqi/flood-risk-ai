@@ -1,6 +1,6 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.application.flood_risk_service import FloodRiskService
 from app.domain.flood_risk import ClassifierMetadata, InvalidFloodRiskInput
@@ -34,10 +34,14 @@ def predict(request: FloodRiskRequest, service: ServiceDep) -> FloodRiskResponse
 
 
 @router.post("/explain", response_model=FloodRiskExplanationResponse)
-def explain(request: FloodRiskRequest, service: ServiceDep) -> FloodRiskExplanationResponse:
+def explain(
+    request: FloodRiskRequest,
+    service: ServiceDep,
+    language: Annotated[Literal["sq", "en"] | None, Query(description="Language of the explanation")] = None,
+) -> FloodRiskExplanationResponse:
     """ML prediction plus a generated explanation. The class always comes from the ML model."""
     try:
-        result = service.assess_and_interpret(request.to_domain())
+        result = service.assess_and_interpret(request.to_domain(), language)
     except InvalidFloodRiskInput as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     base = FloodRiskResponse.from_domain(result.assessment, _model_info(service.metadata()))

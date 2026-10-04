@@ -23,12 +23,13 @@ class TextInterpreter(RiskInterpreter):
     def __init__(self, text: str) -> None:
         self.text = text
 
-    def interpret(self, assessment, metadata) -> str:
+    def interpret(self, assessment, metadata, language=None) -> str:
+        self.language = language
         return self.text
 
 
 class FailingInterpreter(RiskInterpreter):
-    def interpret(self, assessment, metadata) -> str:
+    def interpret(self, assessment, metadata, language=None) -> str:
         raise InterpretationUnavailable("timeout")
 
 
@@ -122,3 +123,26 @@ def test_explain_endpoint_returns_prediction_and_interpretation():
     assert body["risk"] == "Medium"
     assert body["interpretation_status"] == "ok"
     assert body["interpretation"].startswith("Risk level: Medium")
+
+
+def test_language_is_passed_to_interpreter_and_prompt():
+    interpreter = TextInterpreter("Risk level: High\nTekst")
+    _service(interpreter).assess_and_interpret(FloodRiskInput(**VALID), language="sq")
+    assert interpreter.language == "sq"
+
+    calls = {}
+
+    def create(**kwargs):
+        calls.update(kwargs)
+        return SimpleNamespace(output_text="Risk level: High\nTekst")
+
+    _interpreter_with(create).interpret(_assessment(), FakeClassifier().metadata(), language="sq")
+    assert "Albanian" in calls["instructions"]
+
+
+def test_explain_rejects_unsupported_language():
+    with TestClient(app) as client:
+        response = client.post("/api/flood-risk/explain?language=de", json=dict(
+            elevation=678, distance_from_river=0.79, rainfall=800, soil_type="Aluviale",
+            max_water_level=97, min_water_level=27, min_slope=3, max_slope=70))
+    assert response.status_code == 422

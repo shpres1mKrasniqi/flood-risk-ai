@@ -1,5 +1,3 @@
-"""Integration tests: HTTP endpoint -> service -> real trained model."""
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -41,6 +39,17 @@ def test_municipality_is_optional(client):
 def test_out_of_range_input_still_predicts_but_warns(client):
     body = client.post("/api/flood-risk/predict", json=DECAN | {"distance_from_river": 50}).json()
     assert any("distance_from_river" in w for w in body["warnings"])
+    assert body["out_of_range"] == [
+        {"feature": "distance_from_river", "value": 50.0, "training_min": 0.05, "training_max": 14.16, "unit": "km"}
+    ]
+
+
+def test_cors_allows_vite_dev_server(client):
+    response = client.options(
+        "/api/flood-risk/predict",
+        headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
+    )
+    assert response.headers.get("access-control-allow-origin") == "http://localhost:5173"
 
 
 @pytest.mark.parametrize(
