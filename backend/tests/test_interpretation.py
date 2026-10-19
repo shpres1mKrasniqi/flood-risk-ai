@@ -52,6 +52,19 @@ def test_interpretation_that_states_another_class_is_rejected():
     assert result.assessment.classification.risk_level is RiskLevel.HIGH  # ML class is untouched
 
 
+def test_formatted_header_is_accepted_and_normalised():
+    text = "**Risk level: High.**\nExplanation..."
+    result = _service(TextInterpreter(text)).assess_and_interpret(FloodRiskInput(**VALID))
+    assert result.status is InterpretationStatus.OK
+    assert result.interpretation == "Risk level: High\n\nExplanation..."
+
+
+def test_header_with_extra_words_is_rejected():
+    text = "Risk level: High or Medium\nExplanation..."
+    result = _service(TextInterpreter(text)).assess_and_interpret(FloodRiskInput(**VALID))
+    assert result.status is InterpretationStatus.REJECTED
+
+
 def test_prediction_survives_interpreter_failure():
     result = _service(FailingInterpreter()).assess_and_interpret(FloodRiskInput(**VALID))
     assert result.status is InterpretationStatus.UNAVAILABLE
@@ -104,6 +117,18 @@ def test_adapter_maps_openai_errors():
         raise openai.APIConnectionError(request=httpx.Request("POST", "https://api.openai.com"))
 
     with pytest.raises(InterpretationUnavailable):
+        _interpreter_with(create).interpret(_assessment(), FakeClassifier().metadata())
+
+
+def test_adapter_rejects_truncated_response():
+    def create(**kwargs):
+        return SimpleNamespace(
+            status="incomplete",
+            incomplete_details=SimpleNamespace(reason="max_output_tokens"),
+            output_text="Risk level: High\nThe text was cut",
+        )
+
+    with pytest.raises(InterpretationUnavailable, match="max_output_tokens"):
         _interpreter_with(create).interpret(_assessment(), FakeClassifier().metadata())
 
 

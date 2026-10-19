@@ -101,7 +101,7 @@ def main() -> None:
         "feature_importances": feature_importances(pipeline),
         "limitations": LIMITATIONS,
     }
-    config.MODEL_CARD_PATH.write_text(json.dumps(card, indent=2, ensure_ascii=False))
+    config.MODEL_CARD_PATH.write_text(json.dumps(card, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"Saved model      -> {config.MODEL_PATH}")
     print(f"Saved model card -> {config.MODEL_CARD_PATH}")

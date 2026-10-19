@@ -61,7 +61,9 @@ class OpenAIRiskInterpreter(RiskInterpreter):
         model: str,
         language: str = "English",
         timeout_seconds: float = 30.0,
-        max_output_tokens: int = 600,
+        # Headroom for reasoning models (reasoning tokens count towards this limit)
+        # and for Albanian, which needs more tokens than English for the same text.
+        max_output_tokens: int = 2000,
     ) -> None:
         self._client = openai.OpenAI(api_key=api_key, timeout=timeout_seconds, max_retries=1)
         self._model = model
@@ -86,6 +88,10 @@ class OpenAIRiskInterpreter(RiskInterpreter):
             )
         except openai.OpenAIError as exc:
             raise InterpretationUnavailable(f"{type(exc).__name__}: {exc}") from exc
+
+        if getattr(response, "status", None) == "incomplete":
+            reason = getattr(getattr(response, "incomplete_details", None), "reason", None)
+            raise InterpretationUnavailable(f"OpenAI response was incomplete ({reason}).")
 
         text = response.output_text
         if not text or not text.strip():

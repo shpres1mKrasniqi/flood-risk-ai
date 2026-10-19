@@ -1,8 +1,14 @@
 import os
 from pathlib import Path
 
-ML_ROOT = Path(__file__).resolve().parent       
-REPO_ROOT = ML_ROOT.parents[1]                    
+from dotenv import load_dotenv
+
+ML_ROOT = Path(__file__).resolve().parent
+REPO_ROOT = ML_ROOT.parents[1]
+
+# Same backend/.env the API reads, so FLOOD_* paths also apply to the training scripts.
+# Variables already set in the environment take precedence.
+load_dotenv(ML_ROOT.parent / ".env")
 
 DATASET_PATH = Path(
     os.getenv("FLOOD_DATASET_PATH", REPO_ROOT / "data" / "raw" / "DataSeti_Finali.xlsx")

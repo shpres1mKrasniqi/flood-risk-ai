@@ -160,7 +160,7 @@ def main() -> None:
         "soil_type_categories": sorted(df["soil_type"].unique().tolist()),
         "cv_feasibility": feasibility,
     }
-    (RESULTS / "dataset_overview.json").write_text(json.dumps(overview, indent=2, ensure_ascii=False))
+    (RESULTS / "dataset_overview.json").write_text(json.dumps(overview, indent=2, ensure_ascii=False), encoding="utf-8")
 
     save_plots(df, dist)
 

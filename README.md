@@ -165,7 +165,7 @@ Without an OpenAI key, predictions work normally and the explanation section rep
 | -------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `OPENAI_API_KEY`         | *(empty)*                                           | Enables explanations. Never commit it.                                        |
 | `OPENAI_MODEL`           | *(empty)*                                           | Any model available to your account via the Responses API, e.g.`gpt-6-luna` |
-| `OPENAI_LANGUAGE`        | `English`                                           | Explanation language when a request does not specify one                      |
+| `OPENAI_LANGUAGE`        | `English`                                           | Explanation language when a request does not specify one (the frontend always sends `sq` or `en`) |
 | `OPENAI_TIMEOUT_SECONDS` | `30`                                                | Timeout for the OpenAI request                                                |
 | `CORS_ORIGINS`           | `["http://localhost:5173","http://127.0.0.1:5173"]` | Browser origins allowed to call the API (JSON list)                           |
 | `FLOOD_MODEL_PATH`       | `backend/ml/models/flood_risk_model.joblib`         | Alternative model file                                                        |
@@ -286,7 +286,7 @@ cd backend
 uv run pytest -v
 ```
 
-The suite (29 tests) covers the domain rules, the application service with a fake classifier, the HTTP endpoints with the real trained model, input validation, CORS, and the interpretation layer. The OpenAI client is replaced by a fake in all tests, so no API key is needed and no request is sent.
+The suite (32 tests) covers the domain rules, the application service with a fake classifier, the HTTP endpoints with the real trained model, input validation, CORS, and the interpretation layer. The OpenAI client is replaced by a fake in all tests, so no API key is needed and no request is sent.
 
 ---
 
@@ -364,7 +364,7 @@ This is a research prototype and must not be used as the sole basis for safety d
 | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend shows "…did not return JSON. Check VITE_API_URL."                    | `VITE_API_URL` points to the frontend instead of the backend. Set it to `http://127.0.0.1:8000` in every `frontend/.env*` file (or remove it), then restart `npm run dev`. |
 | Frontend shows "Serveri nuk përgjigjet…" / "The server … is not responding" | The backend is not running. Start it with`uv run fastapi dev app/main.py` in `backend/`.                                                                                       |
-| `interpretation_status: "disabled"`                                          | `OPENAI_API_KEY` or `OPENAI_MODEL` is missing in `backend/.env`. Restart the backend after editing.                                                                          |
+| `interpretation_status: "disabled"`                                          | `OPENAI_API_KEY` or `OPENAI_MODEL` is missing in `backend/.env` (OpenAI settings in `frontend/.env` are ignored). Restart the backend after editing.                                                                          |
 | `interpretation_status: "unavailable"`                                       | OpenAI returned an error (invalid key, unknown model, quota, timeout). The cause is logged in the backend console.                                                                 |
 | `Model not found` at startup                                                 | Train the model:`uv run --group ml python -m ml.training.train`.                                                                                                                 |
 | `No module named ml...`                                                      | Run commands from the`backend/` directory.                                                                                                                                       |

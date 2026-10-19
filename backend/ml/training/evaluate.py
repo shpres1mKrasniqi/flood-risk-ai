@@ -123,5 +123,5 @@ def save_results(results: list[EvaluationResult], out_dir: Path, cv: RepeatedStr
         "confusion_matrix_note": f"Counts summed over {cv.n_repeats} repeats; each row is predicted once per repeat.",
         "models": [r.name for r in results],
     }
-    (out_dir / "run_info.json").write_text(json.dumps(run_info, indent=2))
+    (out_dir / "run_info.json").write_text(json.dumps(run_info, indent=2), encoding="utf-8")
     return comparison

@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 class InterpretationStatus(str, Enum):
     OK = "ok"
-    DISABLED = "disabled"          
-    UNAVAILABLE = "unavailable"   
-    REJECTED = "rejected"     
+    DISABLED = "disabled"
+    UNAVAILABLE = "unavailable"
+    REJECTED = "rejected"
 
 
 @dataclass(frozen=True)
@@ -33,6 +33,11 @@ class InterpretedAssessment:
 def interpretation_header(assessment: FloodRiskAssessment) -> str:
     """First line every interpretation must start with; used to verify it kept the ML class."""
     return f"Risk level: {assessment.classification.risk_level.label}"
+
+
+def _normalise_header(line: str) -> str:
+    """Ignore markdown and punctuation around the header, e.g. '**Risk level: High.**'."""
+    return " ".join(line.strip("*_#`\"'. \t").lower().split())
 
 
 class FloodRiskService:
@@ -68,12 +73,16 @@ class FloodRiskService:
             logger.warning("Interpretation unavailable: %s", exc)
             return InterpretedAssessment(assessment, None, InterpretationStatus.UNAVAILABLE)
 
-        first_line = text.splitlines()[0].strip() if text else ""
-        if first_line.lower() != interpretation_header(assessment).lower():
+        lines = text.splitlines()
+        first_line = lines[0].strip() if lines else ""
+        header = interpretation_header(assessment)
+        if _normalise_header(first_line) != header.lower():
             logger.warning("Interpretation rejected: first line %r does not confirm the ML class.", first_line)
             return InterpretedAssessment(assessment, None, InterpretationStatus.REJECTED)
 
-        return InterpretedAssessment(assessment, text, InterpretationStatus.OK)
+        # Replace the model's header with the canonical one (drops markdown/punctuation variations).
+        body = "\n".join(lines[1:]).strip()
+        return InterpretedAssessment(assessment, f"{header}\n\n{body}".strip(), InterpretationStatus.OK)
 
     def metadata(self) -> ClassifierMetadata:
         return self._classifier.metadata()

@@ -38,7 +38,7 @@ export function validate(values, numericFeatures) {
       .trim()
       .replace(",", ".");
     if (raw === "") errors[name] = "validation.required";
-    else if (Number.isNaN(Number(raw))) errors[name] = "validation.notNumber";
+    else if (!Number.isFinite(Number(raw))) errors[name] = "validation.notNumber";
     else if (Number(raw) < 0) errors[name] = "validation.negative";
   }
   if (!values.soil_type) errors.soil_type = "validation.required";
