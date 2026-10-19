@@ -34,8 +34,8 @@
       "elevation": "m",
       "distance_from_river": "km",
       "rainfall": "mm",
-      "max_water_level": "mm",
-      "min_water_level": "mm",
+      "max_water_level": "cm",
+      "min_water_level": "cm",
       "min_slope": "%",
       "max_slope": "%"
     },

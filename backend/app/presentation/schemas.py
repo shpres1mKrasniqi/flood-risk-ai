@@ -35,8 +35,8 @@ class FloodRiskRequest(BaseModel):
     distance_from_river: float = Field(..., ge=0, le=200, description="Distance to nearest river (km)")
     rainfall: float = Field(..., ge=0, le=5000, description="Rainfall (mm)")
     soil_type: str = Field(..., min_length=1, max_length=50, description="Soil type; see GET /api/flood-risk/metadata")
-    max_water_level: float = Field(..., ge=0, le=100000, description="Maximum water level (mm)")
-    min_water_level: float = Field(..., ge=0, le=100000, description="Minimum water level (mm)")
+    max_water_level: float = Field(..., ge=0, le=100000, description="Maximum water level (cm)")
+    min_water_level: float = Field(..., ge=0, le=100000, description="Minimum water level (cm)")
     min_slope: float = Field(..., ge=0, le=100, description="Minimum slope (%)")
     max_slope: float = Field(..., ge=0, le=100, description="Maximum slope (%)")
 

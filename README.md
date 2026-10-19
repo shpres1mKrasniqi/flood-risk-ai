@@ -232,7 +232,7 @@ Every result folder contains a `run_info.json` with the dataset's SHA-256 hash, 
 | `distance_from_river`                  | km   |                                                                  |
 | `rainfall`                             | mm   |                                                                  |
 | `soil_type`                            | —   | One of the values returned by`/metadata`                       |
-| `max_water_level`, `min_water_level` | mm   | `min` must not exceed `max`                                  |
+| `max_water_level`, `min_water_level` | cm   | `min` must not exceed `max`                                  |
 | `min_slope`, `max_slope`             | %    | `min` must not exceed `max`                                  |
 
 Invalid input (missing fields, negative values, unknown soil type, unexpected fields, min > max) returns **422** with a description of the problem.
@@ -299,7 +299,7 @@ The dataset (`data/raw/DataSeti_Finali.xlsx`) contains **38 Kosovo municipalitie
 | `elevation`                            | m    | numeric               |
 | `distance_from_river`                  | km   | numeric               |
 | `rainfall`                             | mm   | numeric               |
-| `max_water_level`, `min_water_level` | mm   | numeric               |
+| `max_water_level`, `min_water_level` | cm   | numeric               |
 | `min_slope`, `max_slope`             | %    | numeric               |
 | `soil_type`                            | —   | categorical (7 types) |
 
